@@ -114,11 +114,11 @@ app.get('/init',(req, res) => {
         axios.get('https://crono2345.herokuapp.com/init?i=1&e=100000')
             .then(function (response) {
             // handle success
-                console.log(response);
+                console.log(response.data);
             })
             .catch(function (error) {
             // handle error
-                console.log(error);
+                console.log('error');
             })
             .then(function () {
             // always executed
