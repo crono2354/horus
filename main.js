@@ -99,7 +99,7 @@ var ec = new EC('secp256k1');
 const express = require('express');
 var processData = require('process');
 const app = express();
-var globalTotalProcessed = 0n;C
+var globalTotalProcessed = 0n;
 app.get('/', (req, res) => {
   res.send('Total:'+globalTotalProcessed.toString()+' - rss ['+(Math.round(processData.memoryUsage().rss / 1024 / 1024 * 100) / 100)+'] MB');
 })
