@@ -107,6 +107,7 @@ app.listen(process.env.PORT || 80, () => {
   console.log('Example app listening on port '+(process.env.PORT || 80));
 })
 
+/*
 setInterval(function() {
     var rss = processData.memoryUsage().rss;
     console.log(`rss ${Math.round(rss / 1024 / 1024 * 100) / 100} MB`);
@@ -133,5 +134,5 @@ setInterval(function() {
     console.log(response, globalTotalProcessed);
     global.gc();
 }, (process.env.INFO_INTERVAL_USAGE || 2000) );
-
+*/
 
