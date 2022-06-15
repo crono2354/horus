@@ -101,7 +101,7 @@ const app = express();
 var globalTotalProcessed = 0n;
 
 app.get('/', (req, res) => {
-  res.send('Total', globalTotalProcessed)
+  res.send('Total:'+globalTotalProcessed.toString());
 })
 app.listen(process.env.PORT || 80, () => {
   console.log('Example app listening on port '+(process.env.PORT || 80));
