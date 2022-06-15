@@ -99,13 +99,14 @@ var ec = new EC('secp256k1');
 const express = require('express');
 var processData = require('process');
 const app = express();
-var globalTotalProcessed = 0n;
+var globalTotalProcessed = 0n;C
 app.get('/', (req, res) => {
   res.send('Total:'+globalTotalProcessed.toString()+' - rss ['+(Math.round(processData.memoryUsage().rss / 1024 / 1024 * 100) / 100)+'] MB');
 })
 app.get('/init',(req, res) => {
     var worker = new Worker("./worker.js");
     worker.on("exit", () => {
+        global.gc();
     });
     worker.on("message", (value) => {
         if(value.total){
