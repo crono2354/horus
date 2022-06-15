@@ -87,6 +87,7 @@ io.on("connection", function (socket) {
     });
 });*/
 const io = require('socket.io')();
+console.log(process.env.PORT);
 io.on('connection', client => {
     console.log('connected');
  });
