@@ -93,18 +93,38 @@ io.on('connection', client => {
  });
 io.listen(3000);
 */
+const { Worker } = require("worker_threads");
 var EC = require('elliptic').ec;
 var ec = new EC('secp256k1');
 const express = require('express');
 var processData = require('process');
 const app = express();
 var globalTotalProcessed = 0n;
-
 app.get('/', (req, res) => {
-  res.send('Total:'+globalTotalProcessed.toString());
+  res.send('Total:'+globalTotalProcessed.toString()+' - rss ['+(Math.round(processData.memoryUsage().rss / 1024 / 1024 * 100) / 100)+'] MB');
 })
-app.listen(process.env.PORT || 80, () => {
-  console.log('Example app listening on port '+(process.env.PORT || 80));
+app.get('/init',(req, res) => {
+    var worker = new Worker("./worker.js");
+    worker.on("exit", () => {
+    });
+    worker.on("message", (value) => {
+        if(value.total){
+            globalTotalProcessed = globalTotalProcessed + BigInt(value.totalProcessed);
+        }
+    });
+    worker.on("error", (value) => {
+        console.log('worker-error', value);
+    });
+    worker.postMessage(
+        {   
+            "init":req.query.i,
+            "end":req.query.e,
+        }
+    );
+    res.send('ok');
+})
+app.listen(process.env.PORT || 8080, () => {
+  console.log('Example app listening on port '+(process.env.PORT || 8080));
 })
 
 /*

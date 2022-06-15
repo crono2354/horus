@@ -1,13 +1,15 @@
 const {parentPort} = require("worker_threads");
 var EC = require('elliptic').ec;
 var ec = new EC('secp256k1');
+var processData = require('process');
 var totalProcessed = 1n;
 parentPort.on("message", (value) => {
-	var initLoop = BigInt(value.workerRangeInit);
-	var endLoop = BigInt(value.workerRangeEnd);
-	initProcess(initLoop,endLoop,value.workerId,value.processId);
+	var init = BigInt(value.init);
+	var end = BigInt(value.end);
+	initProcess(init,end);
 });
-function initProcess(init,end,workerId,processId){
+function initProcess(init,end){
+	var rss = processData.memoryUsage().rss;
 	var resultList = [];
 	var dateInit = new Date();
 	var response;
@@ -16,6 +18,8 @@ function initProcess(init,end,workerId,processId){
 		var x = k.getPublic().getX();
 		resultList.push([i.toString(), x.toString(),]);
 		totalProcessed++;
+		var rssInner = processData.memoryUsage().rss;
+        if(rssInner>rss) rss = rssInner;
 	}
 	var dateEnd = new Date();	
 	var difference = (dateEnd - dateInit) / 1000;
@@ -23,11 +27,10 @@ function initProcess(init,end,workerId,processId){
 		total: true,
 		list: resultList,
 		time: difference,
-		workerId: workerId,
-		processId: processId,
 		totalProcessed: totalProcessed.toString(),
 		init: init.toString(),
-		end: end.toString()
+		end: end.toString(),
+		rss: rss,
 	}
 	parentPort.postMessage(response);
 	resultList.splice(0,resultList.length);
