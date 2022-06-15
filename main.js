@@ -92,40 +92,46 @@ io.on('connection', client => {
     console.log('connected');
  });
 io.listen(3000);
-
-const { Worker } = require("worker_threads");
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const express = require("express");
+*/
 var EC = require('elliptic').ec;
 var ec = new EC('secp256k1');
+const express = require('express');
 var processData = require('process');
-
-
-
 const app = express();
-
-app.use(cors());
-app.use(express.json());
-app.use(bodyParser.json());
-var server = require("http").Server(app);
-
 var globalTotalProcessed = 0n;
 
-
-
-setInterval(function() {
-    console.log(`rss ${Math.round(processData.memoryUsage().rss / 1024 / 1024 * 100) / 100} MB`);
-    console.log('total',globalTotalProcessed);
-    global.gc();
-}, (process.env.INFO_INTERVAL_USAGE || 1000) );
-*/
-const express = require('express');
-const app = express();
-console.log(process.env.PORT);
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Total', globalTotalProcessed)
 })
 app.listen(process.env.PORT || 80, () => {
-  console.log(`Example app listening on port`);
+  console.log('Example app listening on port '+(process.env.PORT || 80));
 })
+
+setInterval(function() {
+    var rss = processData.memoryUsage().rss;
+    console.log(`rss ${Math.round(rss / 1024 / 1024 * 100) / 100} MB`);
+    var totalProcessed = 1n;
+    var resultList = [];
+    var dateInit = new Date();
+    var response;
+    for (var i = 1n; i <= 50000n; i++) {
+        var k = ec.keyFromPrivate(i.toString(16));
+        var x = k.getPublic().getX();
+        resultList.push([i.toString(), x.toString(),]);
+        totalProcessed++;
+        var rssInner = processData.memoryUsage().rss;
+        if(rssInner>rss) rss = rssInner;
+    }
+    var dateEnd = new Date();	
+    var difference = (dateEnd - dateInit) / 1000;
+    response = {
+        time: difference,
+        maxUsage: Math.round(rssInner / 1024 / 1024 * 100) / 100,
+        totalProcessed: totalProcessed.toString()
+    }
+    globalTotalProcessed = globalTotalProcessed + totalProcessed;
+    console.log(response, globalTotalProcessed);
+    global.gc();
+}, (process.env.INFO_INTERVAL_USAGE || 2000) );
+
+
