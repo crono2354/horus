@@ -119,11 +119,7 @@ setInterval(function() {
     console.log('total',globalTotalProcessed);
     global.gc();
 }, (process.env.INFO_INTERVAL_USAGE || 1000) );
-
-
-
 */
-
 const express = require('express');
 const app = express();
 console.log(process.env.PORT);
@@ -131,5 +127,5 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 app.listen(process.env.PORT || 80, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port`);
 })
