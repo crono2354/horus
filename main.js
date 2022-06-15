@@ -111,7 +111,7 @@ app.get('/init',(req, res) => {
     worker.on("exit", () => {
         global.gc();
         // Make a request for a user with a given ID
-        axios.get('https://crono2345.herokuapp.com/init?i=1&e=10000')
+        axios.get('https://crono2345.herokuapp.com/init?i=1&e=100000')
             .then(function (response) {
             // handle success
                 console.log(response);
