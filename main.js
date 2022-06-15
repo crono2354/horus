@@ -100,10 +100,12 @@ const express = require('express');
 var processData = require('process');
 const app = express();
 var globalTotalProcessed = 0n;
+var dateInit = new Date();
 app.get('/', (req, res) => {
-  res.send('Total:'+globalTotalProcessed.toString()+' - rss ['+(Math.round(processData.memoryUsage().rss / 1024 / 1024 * 100) / 100)+'] MB');
+  res.send('Total:'+globalTotalProcessed.toString()+' - rss ['+(Math.round(processData.memoryUsage().rss / 1024 / 1024 * 100) / 100)+'] MB - secs ['+(((new Date()) - dateInit) / 1000)+']');
 })
 app.get('/init',(req, res) => {
+    dateInit = new Date();
     var worker = new Worker("./worker.js");
     worker.on("exit", () => {
         global.gc();
