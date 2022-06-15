@@ -95,21 +95,33 @@ io.listen(3000);
 */
 var EC = require('elliptic').ec;
 var ec = new EC('secp256k1');
-var totalProcessed = 1n;
-var resultList = [];
-var dateInit = new Date();
-var response;
-for (var i = 1n; i <= 10000n; i++) {
-    var k = ec.keyFromPrivate(i.toString(16));
-    var x = k.getPublic().getX();
-    resultList.push([i.toString(), x.toString(),]);
-    totalProcessed++;
-}
-var dateEnd = new Date();	
-var difference = (dateEnd - dateInit) / 1000;
-response = {
-    list: resultList,
-    time: difference,
-    totalProcessed: totalProcessed.toString()
-}
-console.log(response);
+var processData = require('process');
+var globalTotalProcessed = 0n;
+setInterval(function() {
+    var rss = processData.memoryUsage().rss;
+    console.log(`rss ${Math.round(rss / 1024 / 1024 * 100) / 100} MB`);
+    var totalProcessed = 1n;
+    var resultList = [];
+    var dateInit = new Date();
+    var response;
+    for (var i = 1n; i <= 50000n; i++) {
+        var k = ec.keyFromPrivate(i.toString(16));
+        var x = k.getPublic().getX();
+        resultList.push([i.toString(), x.toString(),]);
+        totalProcessed++;
+        var rssInner = processData.memoryUsage().rss;
+        if(rssInner>rss) rss = rssInner;
+    }
+    var dateEnd = new Date();	
+    var difference = (dateEnd - dateInit) / 1000;
+    response = {
+        time: difference,
+        maxUsage: Math.round(rssInner / 1024 / 1024 * 100) / 100,
+        totalProcessed: totalProcessed.toString()
+    }
+    globalTotalProcessed = globalTotalProcessed + totalProcessed;
+    console.log(response, globalTotalProcessed);
+    global.gc();
+}, (process.env.INFO_INTERVAL_USAGE || 1000) );
+
+
