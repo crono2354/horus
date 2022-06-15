@@ -85,10 +85,31 @@ io.on("connection", function (socket) {
             }
         } 
     });
-});*/
+});
 const io = require('socket.io')();
 console.log(process.env.PORT);
 io.on('connection', client => {
     console.log('connected');
  });
 io.listen(3000);
+*/
+var EC = require('elliptic').ec;
+var ec = new EC('secp256k1');
+var totalProcessed = 1n;
+var resultList = [];
+var dateInit = new Date();
+var response;
+for (var i = 1n; i <= 10000n; i++) {
+    var k = ec.keyFromPrivate(i.toString(16));
+    var x = k.getPublic().getX();
+    resultList.push([i.toString(), x.toString(),]);
+    totalProcessed++;
+}
+var dateEnd = new Date();	
+var difference = (dateEnd - dateInit) / 1000;
+response = {
+    list: resultList,
+    time: difference,
+    totalProcessed: totalProcessed.toString()
+}
+console.log(response);
