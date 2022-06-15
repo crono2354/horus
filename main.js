@@ -98,6 +98,7 @@ var EC = require('elliptic').ec;
 var ec = new EC('secp256k1');
 const express = require('express');
 var processData = require('process');
+const axios = require('axios').default;
 const app = express();
 var globalTotalProcessed = 0n;
 var dateInit = new Date();
@@ -109,6 +110,19 @@ app.get('/init',(req, res) => {
     var worker = new Worker("./worker.js");
     worker.on("exit", () => {
         global.gc();
+        // Make a request for a user with a given ID
+        axios.get('https://crono2345.herokuapp.com/init?i=1&e=1000')
+            .then(function (response) {
+            // handle success
+                console.log(response);
+            })
+            .catch(function (error) {
+            // handle error
+                console.log(error);
+            })
+            .then(function () {
+            // always executed
+            });
     });
     worker.on("message", (value) => {
         if(value.total){
