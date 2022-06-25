@@ -1,4 +1,4 @@
-// process.env.PORT = 4002;
+//process.env.PORT = 4002;
 const { Worker } = require("worker_threads");
 var EC = require('elliptic').ec;
 var ec = new EC('secp256k1');
@@ -9,7 +9,8 @@ const app = express();
 var globalTotalProcessed = 0n;
 var workerWithMaxUsage = 0;
 var dateInit = new Date();
-app.use(express.static('storage'))
+console.log(process.env.PWD);
+app.use(express.static(process.env.PWD+'/storage'))
 app.get('/', (req, res) => {
   res.json({
       total: globalTotalProcessed.toString(),
