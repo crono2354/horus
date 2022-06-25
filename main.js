@@ -82,6 +82,7 @@ async function storage(list,init,end){
         }
     }
     var fileName = path.join(__dirname, '/../app')+'/'+init+'.'+end+'.png';
+    console.log(fileName);
     try{
         jimg.write(fileName, function(){
             console.log('created');
