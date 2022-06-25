@@ -12,7 +12,7 @@ var workerWithMaxUsage = 0;
 var dateInit = new Date();
 console.log(path.join(__dirname, '/../app'));
 //app.use(express.static(process.env.PWD+'/storage'))
-app.use(express.static(path.join(__dirname, '/../app'), { maxAge: 86400000 }));
+app.use('/storage',express.static(path.join(__dirname, '/../app'), { maxAge: 86400000 }));
 app.get('/', (req, res) => {
   res.json({
       total: globalTotalProcessed.toString(),
