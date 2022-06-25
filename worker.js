@@ -2,7 +2,6 @@ const {parentPort} = require("worker_threads");
 var EC = require('elliptic').ec;
 var ec = new EC('secp256k1');
 var processData = require('process');
-var totalProcessed = 1n;
 parentPort.on("message", (value) => {
 	var init = BigInt(value.init);
 	var end = BigInt(value.end);
@@ -24,7 +23,6 @@ async function initProcess(init,end){
 		var hex = '0000000000000000000000000000000000000000000000000000000000000000'+x.toString(16);
     	hex = hex.substring(hex.length-64,hex.length);
 		resultList.push(hex);
-		totalProcessed++;
 		var rssInner = processData.memoryUsage().rss;
         if(rssInner>rss) rss = rssInner;
 	}
@@ -33,7 +31,6 @@ async function initProcess(init,end){
 	response = {
 		list: resultList,
 		time: difference,
-		totalProcessed: totalProcessed.toString(),
 		init: init.toString(),
 		end: end.toString(),
 		rss: rss,

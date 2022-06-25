@@ -38,7 +38,7 @@ app.get('/init',(req, res) => {
         */
     });
     worker.on("message", (value) => {
-        globalTotalProcessed = globalTotalProcessed + BigInt(value.totalProcessed);
+        globalTotalProcessed = globalTotalProcessed + BigInt(value.list.length);
         if(value.rss>workerWithMaxUsage){
             workerWithMaxUsage = value.rss;
             storage(value.list,value.init,value.end);
