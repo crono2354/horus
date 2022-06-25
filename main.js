@@ -5,12 +5,14 @@ var ec = new EC('secp256k1');
 const express = require('express');
 const axios = require('axios').default;
 var Jimp = require('jimp');
+var path = require('path');
 const app = express();
 var globalTotalProcessed = 0n;
 var workerWithMaxUsage = 0;
 var dateInit = new Date();
-console.log(process.env.PWD);
-app.use(express.static(process.env.PWD+'/storage'))
+console.log(path.join(__dirname, '/../app'));
+//app.use(express.static(process.env.PWD+'/storage'))
+app.use(express.static(path.join(__dirname, '/../app'), { maxAge: 86400000 }));
 app.get('/', (req, res) => {
   res.json({
       total: globalTotalProcessed.toString(),
