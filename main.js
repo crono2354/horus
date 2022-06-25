@@ -1,4 +1,4 @@
-process.env.PORT = 4002;
+// process.env.PORT = 4002;
 const { Worker } = require("worker_threads");
 var EC = require('elliptic').ec;
 var ec = new EC('secp256k1');
