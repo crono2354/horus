@@ -6,17 +6,24 @@ var totalProcessed = 1n;
 parentPort.on("message", (value) => {
 	var init = BigInt(value.init);
 	var end = BigInt(value.end);
+	console.log('init = ['+init+','+end+']');
 	initProcess(init,end);
 });
-function initProcess(init,end){
+async function initProcess(init,end){
 	var rss = processData.memoryUsage().rss;
 	var resultList = [];
 	var dateInit = new Date();
 	var response;
-	for (var i = init; i <= end; i++) {
+	if(init==0n){
+		resultList.push('0000000000000000000000000000000000000000000000000000000000000000');
+		init = init + 1n;
+	}
+	for (var i = init; i < end; i++) {
 		var k = ec.keyFromPrivate(i.toString(16));
 		var x = k.getPublic().getX();
-		resultList.push([i.toString(), x.toString(),]);
+		var hex = '0000000000000000000000000000000000000000000000000000000000000000'+x.toString(16);
+    	hex = hex.substring(hex.length-64,hex.length);
+		resultList.push(hex);
 		totalProcessed++;
 		var rssInner = processData.memoryUsage().rss;
         if(rssInner>rss) rss = rssInner;
@@ -24,7 +31,6 @@ function initProcess(init,end){
 	var dateEnd = new Date();	
 	var difference = (dateEnd - dateInit) / 1000;
 	response = {
-		total: true,
 		list: resultList,
 		time: difference,
 		totalProcessed: totalProcessed.toString(),
