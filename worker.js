@@ -13,11 +13,7 @@ async function initProcess(init,end){
 	var resultList = [];
 	var dateInit = new Date();
 	var response;
-	if(init==0n){
-		resultList.push('0000000000000000000000000000000000000000000000000000000000000000');
-		init = init + 1n;
-	}
-	for (var i = init; i < end; i++) {
+	for (var i = init; i <= end; i++) {
 		var k = ec.keyFromPrivate(i.toString(16));
 		var x = k.getPublic().getX();
 		var hex = '0000000000000000000000000000000000000000000000000000000000000000'+x.toString(16);
@@ -35,7 +31,8 @@ async function initProcess(init,end){
 		end: end.toString(),
 		rss: rss,
 	}
+	console.log('w-end');
 	parentPort.postMessage(response);
 	resultList.splice(0,resultList.length);
-	parentPort.close();
+	//parentPort.close();
 }

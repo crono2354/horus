@@ -1,6 +1,6 @@
 {
     "name": "crono2345",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "description": "crono2345",
     "main": "main.js",
     "scripts": {
@@ -13,6 +13,8 @@
         "cors": "^2.8.5",
         "elliptic": "^6.5.4",
         "express": "^4.18.1",
+        "form-data": "^4.0.0",
+        "googleapis": "^104.0.0",
         "jimp": "^0.16.1",
         "path": "^0.12.7",
         "socket.io": "^4.5.1",
