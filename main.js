@@ -19,7 +19,7 @@ const app = express();
 var globalTotalProcessed = 0n;
 var workerWithMaxUsage = 0;
 var dateInit = new Date();
-var totalToProcess = 0;
+var totalToProcess = process.env.MAX_FILES;
 app.use('/storage',express.static(path.join(__dirname, '/../app'), { maxAge: 86400000 }));
 app.get('/', (req, res) => {
   res.json({
@@ -34,6 +34,7 @@ app.get('/init',(req, res) => {
     dateInit = new Date();
     var worker = new Worker("./worker.js");
     worker.on("exit", () => {
+        totalToProcess--;
         console.log('worker->end',totalToProcess);
         var init = BigInt(req.query.e) + 1n
         var end = init + 65536n;
@@ -48,7 +49,6 @@ app.get('/init',(req, res) => {
                 });
         }
         console.log('resta',totalToProcess);
-        totalToProcess--;
         global.gc();
     });
     worker.on("message", (value) => {
